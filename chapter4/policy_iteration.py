@@ -13,13 +13,13 @@ def evaluate_policy(rows, cols, v, policy, gamma, reward, threshold):
                 continue
             r, c = state
             tmp = v[r, c]
-            v[r, c] = update(v, policy, state, gamma, reward)
+            v[r, c] = update_value(v, policy, state, gamma, reward)
             delta = max(delta, abs(tmp - v[r, c]))
         if delta < threshold:
             break
 
 
-def update(v, policy, state, gamma, reward):
+def update_value(v, policy, state, gamma, reward):
     r, c = state
     action_prob = policy[r, c]
     updated_v = 0
@@ -54,25 +54,10 @@ def improve_policy(rows, cols, policy, reward, gamma, v):
         old_action_prob = policy[r, c].copy()
         new_policy = update_policy(state, policy, reward, gamma, v)
 
-        prob = 1.0 / len(new_policy)
-        policy[r, c] = np.zeros((4,))
-        for k in new_policy:
-            policy[r, c][k] = prob
+        overwrite_policy(state, new_policy, policy)
         if not np.all(old_action_prob == policy[r, c]):
             is_stable = False
     return is_stable
-
-
-def display_results(v, policy, rows, cols):
-    for state in state_generator(rows, cols):
-        if is_terminal_state(state):
-            continue
-        r, c = state
-        indices = np.where(policy[r, c] > 0)
-        directions = [ACTION_MAP[index] for index in indices[0]]
-        path = ':'.join(directions)
-        print(r, c, path, policy[r, c])
-    print(v)
 
 
 def policy_iteration():
@@ -81,6 +66,7 @@ def policy_iteration():
     while True:
         evaluate_policy(ROWS, COLS, v, policy, GAMMA, REWARD, THRESHOLD)
         is_stable = improve_policy(ROWS, COLS, policy, REWARD, GAMMA, v)
+        print(v)
         if is_stable:
             break
     display_results(v, policy, ROWS, COLS)

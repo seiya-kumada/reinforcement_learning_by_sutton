@@ -47,3 +47,23 @@ def state_generator(rows, cols):
     for row in range(rows):
         for col in range(cols):
             yield np.array([row, col])
+
+
+def display_results(v, policy, rows, cols):
+    for state in state_generator(rows, cols):
+        if is_terminal_state(state):
+            continue
+        r, c = state
+        indices = np.where(policy[r, c] > 0)
+        directions = [ACTION_MAP[index] for index in indices[0]]
+        path = ':'.join(directions)
+        print(r, c, path, policy[r, c])
+    print(v)
+
+
+def overwrite_policy(state, new_policy, policy):
+    r, c = state
+    prob = 1.0 / len(new_policy)
+    policy[r, c] = np.zeros((4,))
+    for k in new_policy:
+        policy[r, c][k] = prob

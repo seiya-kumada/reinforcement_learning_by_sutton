@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 from common import *  # noqa
 
-# https://github.com/ShangtongZhang/reinforcement-learning-an-introduction
-
 
 def update(v, state, gamma, reward):
     updated_v = 0.0
@@ -31,7 +29,6 @@ def main():
             break
 
     print("iteration size: {}".format(k))
-    print("value funtion:")
     display_value_function(v)
 
 

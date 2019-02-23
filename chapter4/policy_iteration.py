@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from common import *  # noqa
-# https://github.com/ShangtongZhang/reinforcement-learning-an-introduction
 
 
 def evaluate_policy(rows, cols, v, policy, gamma, reward, threshold):
@@ -29,14 +28,13 @@ def update_value_function(v, policy, state, gamma, reward):
     return updated_v
 
 
-def update_policy(state, policy, reward, gamma, v):
+def update_policy(state, reward, gamma, v):
     results = {}
     for key in ACTIONS:
         next_state = ACTIONS[key] + state
         if not is_on_grid(next_state):
             next_state = state
-        vs = reward + gamma * v[next_state]
-        results[key] = vs
+        results[key] = reward + gamma * v[next_state]
     max_vs = max(results.values())
     return [k for k, val in results.items() if val == max_vs]
 
@@ -47,7 +45,7 @@ def improve_policy(rows, cols, policy, reward, gamma, v):
         if is_terminal_state(state):
             continue
         old_action_prob = policy[state].copy()
-        new_policy = update_policy(state, policy, reward, gamma, v)
+        new_policy = update_policy(state, reward, gamma, v)
         overwrite_policy(state, new_policy, policy)
         if not np.all(old_action_prob == policy[state]):
             is_stable = False

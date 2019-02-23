@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from common import *  # noqa
-
-# https://github.com/ShangtongZhang/reinforcement-learning-an-introduction
+import policy_iteration
 
 
 def update(v, state, gamma, reward):
@@ -16,23 +15,12 @@ def update(v, state, gamma, reward):
     return max_vs
 
 
-def make_optimal_policy(state, v, reward, gamma):
-    results = {}
-    for key in ACTIONS:
-        next_state = state + ACTIONS[key]
-        if not is_on_grid(next_state):
-            next_state = state
-        results[key] = reward + gamma * v[next_state]
-    max_vs = max(results.values())
-    return [k for k, val in results.items() if val == max_vs]
-
-
 def make_policy(v, rows, cols, reward, gamma):
     policy = initialize_policy(rows, cols)
     for state in state_generator(rows, cols):
         if is_terminal_state(state):
             continue
-        op = make_optimal_policy(state, v, reward, gamma)
+        op = policy_iteration.update_policy(state, reward, gamma, v)
         overwrite_policy(state, op, policy)
     return policy
 

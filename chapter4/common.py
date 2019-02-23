@@ -74,18 +74,19 @@ def state_generator(rows, cols):
             yield Point(row, col)
 
 
-def display_results(v, policy, rows, cols):
-    for state in state_generator(rows, cols):
-        if is_terminal_state(state):
-            continue
-        indices = np.where(policy[state] > 0)
-        directions = [ACTION_MAP[index] for index in indices[0]]
-        path = ':'.join(directions)
-        print(state.row, state.col, path, policy[state])
-    print(v)
+# def display_results(v, policy, rows, cols):
+#     for state in state_generator(rows, cols):
+#         if is_terminal_state(state):
+#             continue
+#         indices = np.where(policy[state] > 0)
+#         directions = [ACTION_MAP[index] for index in indices[0]]
+#         path = ':'.join(directions)
+#         print(state.row, state.col, path, policy[state])
+#     print(v)
 
 
 def display_policy(policy):
+    print("policy ---")
     for state in state_generator(ROWS, COLS):
         if is_terminal_state(state):
             continue
@@ -96,6 +97,7 @@ def display_policy(policy):
 
 
 def display_value_function(v):
+    print("value function ---")
     d = np.empty((4, 4))
     for state in state_generator(ROWS, COLS):
         r, c = state.row, state.col
